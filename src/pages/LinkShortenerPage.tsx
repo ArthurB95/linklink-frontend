@@ -21,7 +21,7 @@ export function LinkShortenerPage() {
   const [shortenedLinks, setShortenedLinks] = useState<ShortenedLink[]>([]);
   const [loading, setLoading] = useState(true);
   const [creating, setCreating] = useState(false);
-  const REDIRECT_BASE_URL = process.env.REACT_REDIRECT_BASE_URL;
+  const REDIRECT_BASE_URL = process.env.REACT_APP_REDIRECT_BASE_URL;
 
   const loadLinks = async () => {
     try {
