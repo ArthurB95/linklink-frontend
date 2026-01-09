@@ -8,7 +8,7 @@ interface LoginPageProps {
 
 export function LoginPage({ onLogin }: LoginPageProps) {
   const navigate = useNavigate();
-  const API_BASE_URL = "http://localhost:8080";
+  const API_BASE_URL = process.env.REACT_API_BASE_URL;
 
   const handleGoogleLogin = () => {
     window.location.href = `${API_BASE_URL}/oauth2/authorize/google`;
