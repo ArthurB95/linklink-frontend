@@ -99,9 +99,6 @@ export function BioPage() {
   // 3. Remover Link (Remove do Backend)
   const removeLink = async (id: number) => {
     try {
-      // Otimismo: Remove da tela antes para parecer rápido
-      const previousLinks = [...links];
-      setLinks(links.filter((link) => link.id !== id));
 
       await bioPageService.deleteLink(id);
       toast.success("Link removido");

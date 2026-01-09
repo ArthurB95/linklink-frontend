@@ -8,7 +8,7 @@ import { Label } from "./ui/label";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Switch } from "./ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
-import { Trash2, Edit2, Plus, Save, ArrowUp, ArrowDown, ExternalLink } from "lucide-react";
+import { Trash2, Edit2, Plus, Save, ArrowUp, ArrowDown } from "lucide-react";
 import { toast } from "sonner";
 
 interface BioPageBuilderProps {

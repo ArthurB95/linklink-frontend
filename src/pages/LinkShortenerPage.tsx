@@ -95,7 +95,7 @@ export function LinkShortenerPage() {
 
     try {
       // Otimistic Update: Remove da interface antes da API responder (para ser rápido)
-      const previousLinks = [...shortenedLinks];
+      
       setShortenedLinks(shortenedLinks.filter((link) => link.id !== id));
 
       await bioPageService.deleteShortenedLink(id);
