@@ -9,7 +9,6 @@ import {
   Copy,
   Save,
   Palette,
-  ExternalLink,
 } from "lucide-react";
 import { toast } from "sonner";
 import {

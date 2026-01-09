@@ -8,7 +8,7 @@ import { Label } from "./ui/label";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Switch } from "./ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
-import { Trash2, Edit2, Plus, Save, X, ArrowUp, ArrowDown, ExternalLink } from "lucide-react";
+import { Trash2, Edit2, Plus, Save, ArrowUp, ArrowDown, ExternalLink } from "lucide-react";
 import { toast } from "sonner";
 
 interface BioPageBuilderProps {
@@ -292,7 +292,6 @@ export function BioPageBuilder({
                 {initialData.links.map(link => (
                   <a 
                     key={link.id}
-                    href="#" // Link morto no preview
                     onClick={(e) => e.preventDefault()}
                     className="block w-full p-3 bg-white border-2 border-gray-200 rounded-xl hover:border-indigo-500 hover:shadow-md transition-all text-center font-medium text-gray-700"
                   >
