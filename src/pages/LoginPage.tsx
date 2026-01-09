@@ -8,9 +8,12 @@ interface LoginPageProps {
 export function LoginPage({ onLogin }: LoginPageProps) {
   const navigate = useNavigate();
   const API_BASE_URL = process.env.REACT_APP_GOOGLE_API_BASE_URL;
+  const REDIRECT_URI = process.env.REACT_APP_REDIRECT_URI;
 
   const handleGoogleLogin = () => {
-    window.location.href = `${API_BASE_URL}/oauth2/authorize/google`;
+    const targetUrl = `${API_BASE_URL}/oauth2/authorize/google?redirect_uri=${REDIRECT_URI}`;
+
+    window.location.href = targetUrl;
   };
 
   const handleFacebookLogin = () => {
