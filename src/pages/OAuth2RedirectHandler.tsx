@@ -19,15 +19,13 @@ export function OAuth2RedirectHandler() {
       
       toast.success("Login realizado com sucesso!");
       
-      setTimeout(() => {
-        navigate('/dashboard');
-      }, 100);
+      window.location.href = '/dashboard';
 
     } else {
       toast.error(error || "Falha na autenticação. Tente novamente.");
-      navigate('/login');
+      window.location.href = '/login';
     }
-  }, [searchParams, navigate]);
+  }, [searchParams]);
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50">

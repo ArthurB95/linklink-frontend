@@ -28,7 +28,9 @@ const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
 };
 
 export default function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+    return !!localStorage.getItem("accessToken");
+  });
 
   return (
     <>
