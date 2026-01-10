@@ -65,6 +65,11 @@ export const authService = {
       method: "GET",
       headers: getHeaders(),
     });
+
+    console.log("URL da API:", process.env.REACT_APP_API_BASE_URL);
+
+// Digite isso para ver se o token existe
+console.log("Token:", localStorage.getItem("accessToken"));
     if (!response.ok) throw new Error("Falha ao autenticar");
     return response.json();
   },
