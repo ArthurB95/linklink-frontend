@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { Sparkles, Link2, QrCode, Users, TrendingUp, Shield, Zap, ExternalLink } from 'lucide-react';
+import {Logo} from '../components/Logo';
 
 export function LandingPage() {
   const navigate = useNavigate();
@@ -33,6 +34,20 @@ export function LandingPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50">
+      <nav className="relative z-10 bg-white/80 backdrop-blur-md border-b border-gray-200">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <div className="flex items-center justify-between">
+            <Logo size="md" />
+            <button
+              onClick={() => navigate('/login')}
+              className="px-6 py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-full hover:shadow-lg hover:scale-105 transition-all"
+            >
+              Entrar
+            </button>
+          </div>
+        </div>
+      </nav>
+
       {/* Hero Section */}
       <div className="relative overflow-hidden bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 text-white">
         {/* Decorative elements */}

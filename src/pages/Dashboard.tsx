@@ -23,6 +23,7 @@ import {
   User,
 } from "../service/api";
 import { toast } from "sonner";
+import { Logo } from "../components/Logo";
 
 type ViewMode = "overview" | "editor";
 
@@ -337,6 +338,7 @@ export function Dashboard() {
                 {currentView === "overview" ? "Dashboard" : "Editar Bio Page"}
               </h1>
             </div>
+            <Logo size="sm" />
             <button
               onClick={() => {
                 localStorage.removeItem("accessToken");
