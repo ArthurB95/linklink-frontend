@@ -11,11 +11,8 @@ import {
   Palette,
 } from "lucide-react";
 import { toast } from "sonner";
-import {
-  bioPageService,
-  BioLink,
-  authService
-} from "../service/api";
+import { bioPageService, BioLink, authService } from "../service/api";
+import { Logo } from "../components/Logo";
 
 export function BioPage() {
   const navigate = useNavigate();
@@ -47,7 +44,7 @@ export function BioPage() {
       setBio(bioData.bio || "");
       setAvatarUrl(bioData.avatarUrl || "");
       setLinks(bioData.links || []);
-      authService.me()
+      authService.me();
 
       // Mapeia o tema do backend para o frontend (ajuste conforme seus enums)
       // Se o backend salvar string livre, isso funciona direto.
@@ -99,7 +96,6 @@ export function BioPage() {
   // 3. Remover Link (Remove do Backend)
   const removeLink = async (id: number) => {
     try {
-
       await bioPageService.deleteLink(id);
       toast.success("Link removido");
     } catch (error) {
@@ -111,8 +107,8 @@ export function BioPage() {
   // 4. Copiar URL (Gera URL baseada no ID ou username se tiver)
   const copyBioPageUrl = () => {
     if (!username) {
-        toast.error("Username não carregado");
-        return;
+      toast.error("Username não carregado");
+      return;
     }
 
     const url = `${window.location.origin}/${username}`;
@@ -409,20 +405,37 @@ export function BioPage() {
                                   src={avatarUrl}
                                   alt="Avatar"
                                   className="w-full h-full object-cover"
-                                  onError={(e) => e.currentTarget.style.display = 'none'}
+                                  onError={(e) =>
+                                    (e.currentTarget.style.display = "none")
+                                  }
                                 />
                               ) : (
-                                <span className={`text-2xl font-bold ${themeStyles.text}`}>{profileName ? profileName[0].toUpperCase() : "?"}</span>
+                                <span
+                                  className={`text-2xl font-bold ${themeStyles.text}`}
+                                >
+                                  {profileName
+                                    ? profileName[0].toUpperCase()
+                                    : "?"}
+                                </span>
                               )}
                             </div>
                           </div>
 
-                          <h2 className={`mb-2 font-bold text-xl ${themeStyles.text}`}>{profileName || "Seu Nome"}</h2>
-                          <p className={`${themeStyles.text} text-sm mb-8`}>{bio || "Sua bio aparecerá aqui..."}</p>
+                          <h2
+                            className={`mb-2 font-bold text-xl ${themeStyles.text}`}
+                          >
+                            {profileName || "Seu Nome"}
+                          </h2>
+                          <p className={`${themeStyles.text} text-sm mb-8`}>
+                            {bio || "Sua bio aparecerá aqui..."}
+                          </p>
 
                           <div className="space-y-3">
                             {links.map((link) => (
-                              <div key={link.id} className={`px-6 py-4 ${themeStyles.linkBg} rounded-xl transition-all text-center`}>
+                              <div
+                                key={link.id}
+                                className={`px-6 py-4 ${themeStyles.linkBg} rounded-xl transition-all text-center`}
+                              >
                                 {link.title}
                               </div>
                             ))}
