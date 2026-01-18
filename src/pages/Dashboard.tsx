@@ -49,6 +49,8 @@ export function Dashboard() {
   const [currentPage, setCurrentPage] = useState(1);
   const [user, setUser] = useState<User | null>(null);
 
+  const SITE_BASE_URL = process.env.REACT_APP_SITE_BASE_URL;
+
   useEffect(() => {
     loadAllData();
   }, []);
@@ -76,6 +78,12 @@ export function Dashboard() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const getFormattedUrl = (backendUrl: string) => {
+    if (!backendUrl) return "";
+    const code = backendUrl.split("/").pop();
+    return `${SITE_BASE_URL}/${code}`;
   };
 
   const handleUpdateProfile = async (updatedData: Partial<BioPage>) => {
@@ -184,10 +192,13 @@ export function Dashboard() {
     // 3. Adicionar Short Links
     if (Array.isArray(shortLinks)) {
       shortLinks.forEach((sl) => {
+        const niceUrl = getFormattedUrl(sl.shortUrl);
+        // Remove o https:// para ficar mais limpo no título se não tiver título personalizado
+        const cleanUrlDisplay = niceUrl.replace(/^https?:\/\//, "");
         activity.push({
           id: `short-${sl.id}`,
           type: "short-link",
-          title: sl.title || sl.shortUrl || "Link Encurtado",
+          title: sl.title || cleanUrlDisplay,
           detail: sl.shortUrl || "",
           metric: sl.clickCount || 0,
           metricLabel: "cliques",
