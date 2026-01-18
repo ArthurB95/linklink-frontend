@@ -10,6 +10,8 @@ import {
   Calendar,
   TrendingUp,
   Loader2,
+  ChevronRight,
+  ChevronLeft
 } from "lucide-react";
 import { toast } from "sonner";
 import { bioPageService, ShortenedLink } from "../service/api";
@@ -21,7 +23,11 @@ export function LinkShortenerPage() {
   const [shortenedLinks, setShortenedLinks] = useState<ShortenedLink[]>([]);
   const [loading, setLoading] = useState(true);
   const [creating, setCreating] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const ITEMS_PER_PAGE = 5;
+
   const REDIRECT_BASE_URL = process.env.REACT_APP_REDIRECT_BASE_URL;
+  const SITE_BASE_URL = process.env.REACT_APP_SITE_BASE_URL;
 
   const loadLinks = async () => {
     try {
@@ -50,6 +56,31 @@ export function LinkShortenerPage() {
       window.removeEventListener("focus", onFocus);
     };
   }, []);
+
+  const totalPages = Math.ceil(shortenedLinks.length / ITEMS_PER_PAGE);
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const paginatedLinks = shortenedLinks.slice(
+    startIndex,
+    startIndex + ITEMS_PER_PAGE
+  );
+
+  const goToNextPage = () => {
+    if (currentPage < totalPages) setCurrentPage((prev) => prev + 1);
+  };
+
+  const goToPrevPage = () => {
+    if (currentPage > 1) setCurrentPage((prev) => prev - 1);
+  };
+
+  const goToPage = (pageNumber: number) => {
+    setCurrentPage(pageNumber);
+  };
+
+  useEffect(() => {
+    if (currentPage > totalPages && totalPages > 0) {
+      setCurrentPage(totalPages);
+    }
+  }, [shortenedLinks.length, totalPages, currentPage]);
 
   const shortenLink = async () => {
     if (!longUrl) {
@@ -83,9 +114,19 @@ export function LinkShortenerPage() {
     }
   };
 
-  const copyToClipboard = (shortUrl: string) => {
-    const fullUrl = formatUrl(shortUrl);
+  const getFormattedUrl = (backendUrl: string) => {
+    if (!backendUrl) return "";
 
+    // Divide a URL pelas barras e pega o último pedaço (o código/slug)
+    // Ex: http://localhost:8080/api/v1/public/links/meucodigo -> meucodigo
+    const code = backendUrl.split("/").pop();
+
+    // Retorna a URL com o domínio do seu site
+    return `${SITE_BASE_URL}/${code}`;
+  };
+
+  const copyToClipboard = (shortUrl: string) => {
+    const fullUrl = getFormattedUrl(shortUrl);
     navigator.clipboard.writeText(fullUrl);
     toast.success("Link copiado para área de transferência!");
   };
@@ -95,7 +136,7 @@ export function LinkShortenerPage() {
 
     try {
       // Otimistic Update: Remove da interface antes da API responder (para ser rápido)
-      
+
       setShortenedLinks(shortenedLinks.filter((link) => link.id !== id));
 
       await bioPageService.deleteShortenedLink(id);
@@ -222,7 +263,7 @@ export function LinkShortenerPage() {
                   type="text"
                   value={customSlug}
                   onChange={(e) =>
-                    setCustomSlug( 
+                    setCustomSlug(
                       e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, "")
                     )
                   }
@@ -276,78 +317,116 @@ export function LinkShortenerPage() {
               <Loader2 className="w-8 h-8 text-purple-600 animate-spin" />
             </div>
           ) : shortenedLinks.length > 0 ? (
-            <div className="space-y-4">
-              {shortenedLinks.map((link) => (
-                <div
-                  key={link.id}
-                  className="p-6 bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl border border-purple-100 hover:shadow-md transition-all group"
-                >
-                  <div className="flex items-start justify-between gap-4 mb-4">
-                    <div className="flex-1 min-w-0">
-                      {/* Short Link */}
-                      <div className="flex items-center gap-2 mb-2">
-                        <a
-                          href={formatUrl(link.shortUrl)}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-lg text-purple-600 hover:text-purple-800 transition-colors"
-                        >
-                          {link.shortUrl.replace(/^https?:\/\//, "")}
-                        </a>
-                        <button
-                          onClick={() => copyToClipboard(link.shortUrl)}
-                          className="p-1.5 hover:bg-purple-100 rounded-lg transition-colors"
-                        >
-                          <Copy className="w-4 h-4 text-purple-600" />
-                        </button>
-                        {link.originalUrl && (
-                          <span className="px-2 py-1 bg-purple-200 text-purple-800 text-xs rounded-full">
-                            Personalizado
-                          </span>
-                        )}
-                      </div>
-
-                      {/* Original URL */}
-                      <div className="flex items-center gap-2">
-                        <div className="text-sm text-gray-600 truncate flex-1">
-                          {link.originalUrl}
+            <>
+              <div className="space-y-4">
+                {paginatedLinks.map((link) => (
+                  <div
+                    key={link.id}
+                    className="p-6 bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl border border-purple-100 hover:shadow-md transition-all group"
+                  >
+                    <div className="flex items-start justify-between gap-4 mb-4">
+                      <div className="flex-1 min-w-0">
+                        {/* Short Link */}
+                        <div className="flex items-center gap-2 mb-2">
+                          <a
+                            href={getFormattedUrl(link.shortUrl)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-lg text-purple-600 hover:text-purple-800 transition-colors"
+                          >
+                            {getFormattedUrl(link.shortUrl).replace(
+                              "https://",
+                              ""
+                            )}{" "}
+                          </a>
+                          <button
+                            onClick={() => copyToClipboard(link.shortUrl)}
+                            className="p-1.5 hover:bg-purple-100 rounded-lg transition-colors"
+                          >
+                            <Copy className="w-4 h-4 text-purple-600" />
+                          </button>
+                          {link.originalUrl && (
+                            <span className="px-2 py-1 bg-purple-200 text-purple-800 text-xs rounded-full">
+                              Personalizado
+                            </span>
+                          )}
                         </div>
-                        <a
-                          href={link.originalUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="p-1.5 hover:bg-purple-100 rounded-lg transition-colors flex-shrink-0"
-                        >
-                          <ExternalLink className="w-4 h-4 text-purple-600" />
-                        </a>
+
+                        {/* Original URL */}
+                        <div className="flex items-center gap-2">
+                          <div className="text-sm text-gray-600 truncate flex-1">
+                            {link.originalUrl}
+                          </div>
+                          <a
+                            href={link.originalUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="p-1.5 hover:bg-purple-100 rounded-lg transition-colors flex-shrink-0"
+                          >
+                            <ExternalLink className="w-4 h-4 text-purple-600" />
+                          </a>
+                        </div>
+                      </div>
+
+                      <button
+                        onClick={() => deleteLink(link.id)}
+                        className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors opacity-0 group-hover:opacity-100"
+                      >
+                        <Trash2 className="w-5 h-5" />
+                      </button>
+                    </div>
+
+                    {/* Stats */}
+                    <div className="flex items-center gap-6 text-sm">
+                      <div className="flex items-center gap-2 text-gray-700">
+                        <BarChart3 className="w-4 h-4 text-purple-600" />
+                        <span>{link.clickCount} cliques</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-gray-500">
+                        <Calendar className="w-4 h-4" />
+                        <span>
+                          Criado{" "}
+                          {new Date(link.createdAt).toLocaleDateString("pt-BR")}
+                        </span>
                       </div>
                     </div>
+                  </div>
+                ))}
+              </div>
 
+              {/* Controles de Paginação */}
+              <div className="flex items-center justify-center py-6 mt-4">
+                <button
+                  onClick={goToPrevPage}
+                  className="px-4 py-2 text-gray-600 hover:text-gray-900 transition-colors disabled:opacity-50"
+                  disabled={currentPage === 1}
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                </button>
+                <div className="mx-4 flex gap-1">
+                  {Array.from({ length: totalPages }, (_, index) => (
                     <button
-                      onClick={() => deleteLink(link.id)}
-                      className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors opacity-0 group-hover:opacity-100"
+                      key={index}
+                      onClick={() => goToPage(index + 1)}
+                      className={`px-4 py-2 mx-1 ${
+                        currentPage === index + 1
+                          ? "bg-purple-600 text-white"
+                          : "bg-gray-200 text-gray-600"
+                      } rounded-full hover:bg-purple-700 transition-colors text-sm`}
                     >
-                      <Trash2 className="w-5 h-5" />
+                      {index + 1}
                     </button>
-                  </div>
-
-                  {/* Stats */}
-                  <div className="flex items-center gap-6 text-sm">
-                    <div className="flex items-center gap-2 text-gray-700">
-                      <BarChart3 className="w-4 h-4 text-purple-600" />
-                      <span>{link.clickCount} cliques</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-gray-500">
-                      <Calendar className="w-4 h-4" />
-                      <span>
-                        Criado{" "}
-                        {new Date(link.createdAt).toLocaleDateString("pt-BR")}
-                      </span>
-                    </div>
-                  </div>
+                  ))}
                 </div>
-              ))}
-            </div>
+                <button
+                  onClick={goToNextPage}
+                  className="px-4 py-2 text-gray-600 hover:text-gray-900 transition-colors disabled:opacity-50"
+                  disabled={currentPage === totalPages}
+                >
+                  <ChevronRight className="w-4 h-4" />
+                </button>
+              </div>
+            </>
           ) : (
             <div className="text-center py-12 text-gray-400">
               <Scissors className="w-16 h-16 mx-auto mb-4 opacity-50" />

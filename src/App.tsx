@@ -16,6 +16,7 @@ import { PublicProfilePage } from "./pages/PublicProfilePage";
 import { OAuth2RedirectHandler } from "./pages/OAuth2RedirectHandler";
 import { PublicProfileUser } from "./pages/PublicProfileUser";
 import { Toaster } from "./components/ui/sonner";
+import { RedirectHandler } from "./pages/RedirectHandler";
 
 const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
   const isAuthenticated = !!localStorage.getItem("accessToken");
@@ -83,6 +84,7 @@ export default function App() {
           {/* Public Profile Routes */}
           <Route path="/:username" element={<PublicProfileUser />} />
           <Route path="/preview/:username" element={<PublicProfilePage />} />
+          <Route path="/:username" element={<RedirectHandler />} />
         </Routes>
       </Router>
       <Toaster position="top-center" duration={2000} />
