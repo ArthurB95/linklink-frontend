@@ -14,7 +14,7 @@ export function PublicProfileUser() {
   const [showQRCode, setShowQRCode] = useState(false);
 
   const currentUrl = window.location.href;
-  const API_BASE_URL = "http://192.168.3.7:8080/api/v1";
+  const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
   useEffect(() => {
     if (username) {
