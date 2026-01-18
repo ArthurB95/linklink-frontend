@@ -82,7 +82,6 @@ export default function App() {
             }
           />
           {/* Public Profile Routes */}
-          <Route path="/:username" element={<PublicProfileUser />} />
           <Route path="/preview/:username" element={<PublicProfilePage />} />
           <Route path="/:username" element={<RedirectHandler />} />
         </Routes>
