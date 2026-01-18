@@ -298,4 +298,24 @@ export const bioPageService = {
       console.error("Erro de conexão ao registrar clique", error);
     }
   },
+
+getOriginalLink: async (code: string): Promise<{ originalUrl: string }> => {
+    // Note que usamos /public/links, assumindo que seu backend exponha isso
+    // Se o seu backend retorna o redirect direto (302), precisaremos ajustar o backend
+    // para retornar um JSON { "originalUrl": "..." } quando solicitado desta forma.
+    const response = await fetch(`${API_BASE_URL}/public/links/${code}`, {
+      method: "GET",
+      headers: { 
+        "Content-Type": "application/json" 
+        // Não enviamos Authorization aqui pois é um acesso público
+      },
+    });
+
+    if (!response.ok) {
+      if (response.status === 404) throw new Error("Link não encontrado");
+      throw new Error("Erro ao buscar link original");
+    }
+    
+    return response.json();
+  },
 };
