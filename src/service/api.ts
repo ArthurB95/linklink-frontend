@@ -303,7 +303,7 @@ getOriginalLink: async (code: string): Promise<{ originalUrl: string }> => {
     // Note que usamos /public/links, assumindo que seu backend exponha isso
     // Se o seu backend retorna o redirect direto (302), precisaremos ajustar o backend
     // para retornar um JSON { "originalUrl": "..." } quando solicitado desta forma.
-    const response = await fetch(`${API_BASE_URL}/public/links/${code}`, {
+    const response = await fetch(`${API_BASE_URL}/public/links/${code}/info`, {
       method: "GET",
       headers: { 
         "Content-Type": "application/json" 
